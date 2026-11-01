@@ -1,3 +1,4 @@
+import { SearchInput } from '@/features/jobs/components/SearchInput';
 import { Button, Text, TextInput, View } from 'react-native';
 
 import type { JobSort } from '../jobs.schema';
@@ -81,17 +82,7 @@ function InlineSelect<T extends string>({
 function JobSearchControls({ value, onChange }: JobSearchControlsProps) {
   return (
     <View>
-      <Text accessibilityRole="header">Buscar vacantes</Text>
-
-      <Text>Búsqueda</Text>
-      <TextInput
-        accessibilityLabel="Buscar por título o empresa"
-        placeholder="Título o empresa"
-        value={value.q}
-        onChangeText={(q) => onChange({ ...value, q })}
-        autoCorrect={false}
-        returnKeyType="search"
-      />
+      <SearchInput value={value} onChange={onChange} />
 
       <InlineSelect
         label="Ciudad"

@@ -11,7 +11,7 @@ export default ({ config }: ConfigContext): ExpoConfig => {
     ...config,
     name: 'Redarbor Vacantes',
     slug: 'redarbor-vacantes',
-    scheme: ['occ', 'redarbor'],
+    scheme: ['occ'],
     android: {
       ...config.android,
       package: 'com.redarbor.vacantes',

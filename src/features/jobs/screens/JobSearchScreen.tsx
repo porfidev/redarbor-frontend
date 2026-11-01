@@ -158,6 +158,9 @@ function JobSearchScreen() {
 
   return (
     <FlashList
+      style={{
+        overflow: 'visible',
+      }}
       ref={listRef}
       data={search.jobs}
       keyExtractor={(job) => job.id}
@@ -177,7 +180,7 @@ function JobSearchScreen() {
       keyboardShouldPersistTaps="handled"
       maintainVisibleContentPosition={{ disabled: true }}
       ListHeaderComponent={
-        <View>
+        <View style={{ padding: 12 }}>
           <JobSearchControls value={form} onChange={setForm} />
 
           {!search.validationError && !search.isDebouncing ? (

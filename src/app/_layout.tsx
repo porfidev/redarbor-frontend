@@ -1,3 +1,4 @@
+import { OccHeader } from '@/components/OccHeader';
 import { SessionGuard } from '@/features/auth/components/session-guard';
 import { DefaultTheme, Stack, ThemeProvider } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
@@ -10,7 +11,25 @@ import { JobDetailSheet } from '@/features/jobs/components/JobDetailSheet';
 import { NotificationBridge } from '@/features/notifications/NotificationBridge';
 void SplashScreen.preventAutoHideAsync();
 
+import {
+  useFonts,
+  PlusJakartaSans_400Regular,
+  PlusJakartaSans_500Medium,
+  PlusJakartaSans_600SemiBold,
+  PlusJakartaSans_700Bold,
+} from '@expo-google-fonts/plus-jakarta-sans';
+
 export default function TabLayout() {
+  const [fontsLoaded, fontError] = useFonts({
+    PlusJakartaSans_400Regular,
+    PlusJakartaSans_500Medium,
+    PlusJakartaSans_600SemiBold,
+    PlusJakartaSans_700Bold,
+  });
+
+  if (fontError) throw fontError;
+  if (!fontsLoaded) return null;
+
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <ThemeProvider value={DefaultTheme}>
@@ -18,11 +37,16 @@ export default function TabLayout() {
         <QueryProvider>
           <SessionGuard>
             <BottomSheetModalProvider>
-              <Stack>
-                <Stack.Screen
-                  name={'(tabs)'}
-                  options={{ headerShown: false }}
-                />
+              <Stack
+                screenOptions={{
+                  headerShown: true,
+                  header: () => <OccHeader />,
+                  contentStyle: {
+                    backgroundColor: '#D8E2FF',
+                  },
+                }}
+              >
+                <Stack.Screen name={'(tabs)'} />
                 <Stack.Screen
                   name={'login'}
                   options={{ title: 'Iniciar sesión' }}
