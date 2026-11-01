@@ -1,4 +1,4 @@
-import type { SearchForm } from '@/features/jobs/components/JobSearchControl';
+import { SearchForm } from '@/features/jobs/types/SearchForm';
 import { FontAwesome6 } from '@expo/vector-icons';
 import { useState } from 'react';
 import { Pressable, StyleSheet, TextInput, View } from 'react-native';

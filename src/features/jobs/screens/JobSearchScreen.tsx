@@ -44,6 +44,15 @@ function JobSearchScreen() {
   const closedId = useDetailStore((state) => state.lastClosedId);
   const handledClose = useRef<string | undefined>(undefined);
 
+  function handleClearFilters() {
+    setForm((current) => ({
+      ...current,
+      city: initialSearchForm.city,
+      salaryMin: initialSearchForm.salaryMin,
+      salaryMax: initialSearchForm.salaryMax,
+    }));
+  }
+
   const search = useJobSearch({
     q: form.q,
     city: form.city,
@@ -181,7 +190,12 @@ function JobSearchScreen() {
       maintainVisibleContentPosition={{ disabled: true }}
       ListHeaderComponent={
         <View style={{ padding: 12 }}>
-          <JobSearchControls value={form} onChange={setForm} />
+          <Text>{JSON.stringify(form, null, 2)}</Text>
+          <JobSearchControls
+            value={form}
+            onChange={setForm}
+            onClear={handleClearFilters}
+          />
 
           {!search.validationError && !search.isDebouncing ? (
             <Text>{search.total} vacantes encontradas</Text>
