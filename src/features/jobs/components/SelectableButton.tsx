@@ -1,6 +1,6 @@
-import { PlusJakartaSans_500Medium } from '@expo-google-fonts/plus-jakarta-sans';
 import { FontAwesome } from '@expo/vector-icons';
-import { Pressable, PressableProps, StyleSheet, Text } from 'react-native';
+import { Pressable, StyleSheet, Text } from 'react-native';
+import type { PressableProps } from 'react-native';
 
 type SelectableButtonProps = PressableProps & {
   placeholder: string;
@@ -11,10 +11,13 @@ function SelectableButton({
   onPress,
   placeholder,
   value,
+  disabled = false,
 }: SelectableButtonProps) {
   return (
     <Pressable
-      style={styles.selectableButton}
+      style={[styles.selectableButton, disabled && { opacity: 0.45 }]}
+      disabled={disabled}
+      accessibilityState={{ disabled }}
       onPress={onPress}
       accessibilityRole="button"
     >

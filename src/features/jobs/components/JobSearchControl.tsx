@@ -26,6 +26,7 @@ import type { JobSort } from '../jobs.schema';
 import type { SearchForm } from '../types/SearchForm';
 
 type JobSearchControlsProps = {
+  sortDisabled?: boolean;
   onClear: () => void;
   value: SearchForm;
   onChange: (value: SearchForm) => void;
@@ -97,6 +98,7 @@ function JobSearchControls({
   value,
   onChange,
   onClear,
+  sortDisabled = false,
 }: JobSearchControlsProps) {
   const sheetRef = useRef<BottomSheetModal>(null);
   const sortSheetRef = useRef<BottomSheetModal>(null);
@@ -155,6 +157,7 @@ function JobSearchControls({
           <Spacer />
           <SelectableButton
             placeholder="Selecciona el orden"
+            disabled={sortDisabled}
             value={
               sortOptions.find((option) => option.value === value.sort)
                 ?.label ?? ''

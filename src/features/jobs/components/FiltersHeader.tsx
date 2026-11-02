@@ -5,19 +5,21 @@ import { Pressable, StyleSheet, Text, View } from 'react-native';
 type FiltersHeaderProps = {
   title?: string;
   icon?: ReactNode;
+  fontSize?: number;
   onClear?: () => void;
 };
 
 function FiltersHeader({
   title = 'Filtros en tiempo real',
   icon = <MaterialCommunityIcons name="tune" size={14} color="#0058BE" />,
+  fontSize = 12,
   onClear,
 }: FiltersHeaderProps) {
   return (
     <View style={styles.container}>
       <View style={styles.titleGroup}>
         {icon}
-        <Text style={styles.title}>{title}</Text>
+        <Text style={[styles.title, { fontSize }]}>{title}</Text>
       </View>
 
       {onClear && (
@@ -49,11 +51,13 @@ const styles = StyleSheet.create({
     paddingBottom: 8,
   },
   titleGroup: {
+    flexShrink: 1,
     flexDirection: 'row',
     alignItems: 'center',
     gap: 6,
   },
   title: {
+    flexShrink: 1,
     color: '#070235',
     fontFamily: 'PlusJakartaSans_700Bold',
     fontSize: 12,

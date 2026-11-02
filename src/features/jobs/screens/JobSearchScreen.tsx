@@ -1,9 +1,14 @@
+import { Spacer } from '@/components/Spacer';
+import { FiltersHeader } from '@/features/jobs/components/FiltersHeader';
 import { JobCard } from '@/features/jobs/components/JobCard';
+import { JobCardSkeleton } from '@/features/jobs/components/JobCardSkeleton';
+import { JobsEmptyState } from '@/features/jobs/components/JobsEmptyState';
 import {
   initialSearchForm,
   JobSearchControls,
 } from '@/features/jobs/components/JobSearchControl';
 import type { SearchForm } from '@/features/jobs/components/JobSearchControl';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useDetailStore } from '../detail.store';
 import { FlashList } from '@shopify/flash-list';
 import type { FlashListRef } from '@shopify/flash-list';
@@ -62,6 +67,12 @@ function JobSearchScreen() {
     limit: 20,
   });
 
+  const isLoadingResults =
+    !search.validationError &&
+    (search.isDebouncing ||
+      search.isPending ||
+      (search.isFetching && !search.isFetchingNextPage));
+
   useEffect(() => {
     listRef.current?.scrollToOffset({
       offset: 0,
@@ -93,11 +104,16 @@ function JobSearchScreen() {
       );
     }
 
-    if (search.isDebouncing || search.isPending) {
+    if (isLoadingResults) {
       return (
-        <View>
-          <ActivityIndicator accessibilityLabel="Buscando vacantes" />
-          <Text>Buscando vacantes…</Text>
+        <View
+          style={{ paddingHorizontal: 12 }}
+          accessibilityLabel="Buscando vacantes"
+          accessibilityState={{ busy: true }}
+        >
+          <JobCardSkeleton />
+          <JobCardSkeleton />
+          <JobCardSkeleton />
         </View>
       );
     }
@@ -116,12 +132,13 @@ function JobSearchScreen() {
       );
     }
 
-    return <Text>No encontramos vacantes con estos filtros.</Text>;
+    return <JobsEmptyState onClear={handleClearFilters} />;
   }
 
   function renderFooter() {
     if (
       search.jobs.length === 0 ||
+      isLoadingResults ||
       search.validationError ||
       search.isDebouncing
     ) {
@@ -171,17 +188,19 @@ function JobSearchScreen() {
         overflow: 'visible',
       }}
       ref={listRef}
-      data={search.jobs}
+      data={isLoadingResults ? [] : search.jobs}
       keyExtractor={(job) => job.id}
       renderItem={({ item }) => (
-        <JobCard
-          job={item}
-          onOpen={() =>
-            useDetailStore
-              .getState()
-              .open(item.id, { jobs: search.jobs, filters: search.filters })
-          }
-        />
+        <View style={{ paddingHorizontal: 12 }}>
+          <JobCard
+            job={item}
+            onOpen={() =>
+              useDetailStore
+                .getState()
+                .open(item.id, { jobs: search.jobs, filters: search.filters })
+            }
+          />
+        </View>
       )}
       onViewableItemsChanged={({ viewableItems }) => {
         visibleIds.current = new Set(viewableItems.map(({ item }) => item.id));
@@ -189,16 +208,34 @@ function JobSearchScreen() {
       keyboardShouldPersistTaps="handled"
       maintainVisibleContentPosition={{ disabled: true }}
       ListHeaderComponent={
-        <View style={{ padding: 12 }}>
-          <Text>{JSON.stringify(form, null, 2)}</Text>
+        <View style={{ paddingHorizontal: 12 }}>
           <JobSearchControls
             value={form}
             onChange={setForm}
             onClear={handleClearFilters}
+            sortDisabled={
+              !isLoadingResults &&
+              !search.validationError &&
+              search.isSuccess &&
+              search.jobs.length === 0
+            }
           />
 
           {!search.validationError && !search.isDebouncing ? (
-            <Text>{search.total} vacantes encontradas</Text>
+            <>
+              <Spacer />
+              <FiltersHeader
+                title="Vacantes encontradas"
+                fontSize={24}
+                icon={
+                  <MaterialCommunityIcons
+                    name="view-agenda-outline"
+                    size={26}
+                    color="#0058BE"
+                  />
+                }
+              />
+            </>
           ) : null}
         </View>
       }
@@ -206,7 +243,7 @@ function JobSearchScreen() {
       ListFooterComponent={renderFooter()}
       onEndReachedThreshold={0.5}
       onEndReached={() => {
-        if (!search.isFetchNextPageError) {
+        if (!isLoadingResults && !search.isFetchNextPageError) {
           void search.loadMore();
         }
       }}
