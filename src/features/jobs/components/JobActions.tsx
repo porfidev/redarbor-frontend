@@ -1,5 +1,6 @@
+import { Ionicons } from '@expo/vector-icons';
 import { useState } from 'react';
-import { Button, Text, View } from 'react-native';
+import { Button, Pressable, Text, View } from 'react-native';
 import { router } from 'expo-router';
 import { ApiError } from '@/errors';
 import { useSessionStore } from '@/features/auth/auth.store';
@@ -12,7 +13,7 @@ import { errorMessage } from '@/utils/errorMessage';
 import { useDetailStore } from '../detail.store';
 import type { Job } from '../jobs.schema';
 
-function JobActions({ job }: { job: Job }) {
+function JobActions({ job, compact = false }: { job: Job; compact?: boolean }) {
   const status = useSessionStore((state) => state.status);
   const applications = useActivities('applications');
   const favorites = useActivities('favorites');
@@ -57,24 +58,94 @@ function JobActions({ job }: { job: Job }) {
 
   return (
     <View>
-      <Button
-        title={applied ? 'Ya te postulaste' : 'Aplicar'}
-        disabled={
-          busy ||
-          applied ||
-          (status === 'authenticated' && !applications.isSuccess)
-        }
-        onPress={() => {
-          void act('applications');
-        }}
-      />
-      <Button
-        title={favorited ? 'Quitar favorito' : 'Agregar favorito'}
-        disabled={busy || (status === 'authenticated' && !favorites.isSuccess)}
-        onPress={() => {
-          void act('favorites');
-        }}
-      />
+      {compact ? (
+        <View style={{ flexDirection: 'row', gap: 12 }}>
+          <Pressable
+            accessibilityRole="button"
+            accessibilityLabel={
+              favorited ? 'Quitar favorito' : 'Agregar favorito'
+            }
+            accessibilityState={{ selected: favorited }}
+            disabled={
+              busy || (status === 'authenticated' && !favorites.isSuccess)
+            }
+            onPress={() => {
+              void act('favorites');
+            }}
+            style={({ pressed }) => ({
+              width: 54,
+              minHeight: 54,
+              borderRadius: 14,
+              backgroundColor: '#EFF4FF',
+              alignItems: 'center',
+              justifyContent: 'center',
+              opacity: busy || pressed ? 0.5 : 1,
+            })}
+          >
+            <Ionicons
+              name={favorited ? 'bookmark' : 'bookmark-outline'}
+              size={25}
+              color="#070235"
+            />
+          </Pressable>
+          <Pressable
+            accessibilityRole="button"
+            disabled={
+              busy ||
+              applied ||
+              (status === 'authenticated' && !applications.isSuccess)
+            }
+            onPress={() => {
+              void act('applications');
+            }}
+            style={({ pressed }) => ({
+              flex: 1,
+              minHeight: 54,
+              borderRadius: 14,
+              backgroundColor: '#211B4B',
+              flexDirection: 'row',
+              gap: 8,
+              alignItems: 'center',
+              justifyContent: 'center',
+              opacity: busy || applied || pressed ? 0.5 : 1,
+            })}
+          >
+            <Text
+              style={{
+                color: 'white',
+                fontFamily: 'PlusJakartaSans_700Bold',
+                fontSize: 15,
+              }}
+            >
+              {applied ? 'Ya te postulaste' : 'Postularme ahora'}
+            </Text>
+            <Ionicons name="send-outline" size={20} color="white" />
+          </Pressable>
+        </View>
+      ) : (
+        <>
+          <Button
+            title={applied ? 'Ya te postulaste' : 'Aplicar'}
+            disabled={
+              busy ||
+              applied ||
+              (status === 'authenticated' && !applications.isSuccess)
+            }
+            onPress={() => {
+              void act('applications');
+            }}
+          />
+          <Button
+            title={favorited ? 'Quitar favorito' : 'Agregar favorito'}
+            disabled={
+              busy || (status === 'authenticated' && !favorites.isSuccess)
+            }
+            onPress={() => {
+              void act('favorites');
+            }}
+          />
+        </>
+      )}
       {applications.isError || favorites.isError ? (
         <View>
           <Text>{errorMessage(applications.error ?? favorites.error)}</Text>

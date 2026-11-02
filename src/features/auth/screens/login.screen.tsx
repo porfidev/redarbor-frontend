@@ -1,3 +1,4 @@
+import { Ionicons } from '@expo/vector-icons';
 import { ApiError } from '@/errors';
 import { loginInputSchema } from '@/features/auth/auth.schema';
 import { login } from '@/features/auth/auth.service';
@@ -14,6 +15,8 @@ import {
   ScrollView,
   Text,
   TextInput,
+  View,
+  StyleSheet,
 } from 'react-native';
 
 function LoginScreen() {
@@ -23,6 +26,7 @@ function LoginScreen() {
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string>();
 
@@ -79,58 +83,202 @@ function LoginScreen() {
 
   return (
     <KeyboardAvoidingView
+      style={styles.screen}
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}
     >
-      <ScrollView keyboardShouldPersistTaps="handled">
-        <Text>Inicia sesión</Text>
-        <Text>Correo electrónico</Text>
-        <TextInput
-          value={email}
-          onChangeText={setEmail}
-          placeholder="correo@ejemplo.com"
-          keyboardType="email-address"
-          accessibilityLabel="Correo electrónico"
-          autoCapitalize="none"
-          autoCorrect={false}
-          autoComplete="email"
-          editable={!isSubmitting}
-        />
-        <TextInput
-          accessibilityLabel="Contraseña"
-          placeholder="Contraseña"
-          autoCapitalize="none"
-          autoCorrect={false}
-          autoComplete="current-password"
-          value={password}
-          onChangeText={setPassword}
-          onSubmitEditing={handleSubmit}
-          secureTextEntry
-          editable={!isSubmitting}
-        />
+      <ScrollView
+        keyboardShouldPersistTaps="handled"
+        contentContainerStyle={styles.content}
+      >
+        <Text style={styles.title}>Iniciar Sesión</Text>
+        <Text style={styles.description}>
+          Ingresa tus credenciales para acceder a tus postulaciones activas,
+          vacantes guardadas y notificaciones.
+        </Text>
+        <View style={styles.card}>
+          <View style={styles.labelRow}>
+            <Text style={styles.label}>Correo Electrónico</Text>
+            <Text style={styles.required}>Requerido</Text>
+          </View>
+          <View style={styles.field}>
+            <Ionicons name="mail-outline" size={23} color="#7A7985" />
+            <TextInput
+              style={styles.input}
+              placeholderTextColor="#7A7985"
+              value={email}
+              onChangeText={setEmail}
+              placeholder="ejemplo@redarbor.com"
+              keyboardType="email-address"
+              accessibilityLabel="Correo electrónico"
+              autoCapitalize="none"
+              autoCorrect={false}
+              autoComplete="email"
+              editable={!isSubmitting}
+            />
+          </View>
+          <Text style={styles.label}>Contraseña</Text>
+          <View style={styles.field}>
+            <Ionicons name="key-outline" size={23} color="#7A7985" />
+            <TextInput
+              style={styles.input}
+              placeholderTextColor="#7A7985"
+              accessibilityLabel="Contraseña"
+              placeholder="Contraseña"
+              autoCapitalize="none"
+              autoCorrect={false}
+              autoComplete="current-password"
+              value={password}
+              onChangeText={setPassword}
+              onSubmitEditing={handleSubmit}
+              secureTextEntry={!showPassword}
+              editable={!isSubmitting}
+            />
 
-        {errorMessage ? (
-          <Text accessibilityRole="alert">{errorMessage}</Text>
-        ) : null}
+            <Pressable
+              onPress={() => setShowPassword((shown) => !shown)}
+              accessibilityRole="button"
+              accessibilityLabel={
+                showPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'
+              }
+              style={styles.eyeButton}
+            >
+              <Ionicons
+                name={showPassword ? 'eye-off-outline' : 'eye-outline'}
+                size={24}
+                color="#7A7985"
+              />
+            </Pressable>
+          </View>
+          {errorMessage ? (
+            <Text style={styles.error} accessibilityRole="alert">
+              {errorMessage}
+            </Text>
+          ) : null}
 
-        <Pressable
-          accessibilityRole="button"
-          accessibilityLabel="Iniciar sesión"
-          accessibilityState={{ busy: isSubmitting, disabled: isSubmitting }}
-          disabled={isSubmitting}
-          onPress={handleSubmit}
-        >
-          {isSubmitting ? (
-            <ActivityIndicator color="#FFFFFF" />
-          ) : (
-            <Text>Iniciar sesión</Text>
-          )}
-        </Pressable>
-        <Link href="/" replace>
-          Continuar buscando vacantes
-        </Link>
+          <Pressable
+            accessibilityRole="button"
+            style={({ pressed }) => [
+              styles.submit,
+              (pressed || isSubmitting) && { opacity: 0.65 },
+            ]}
+            accessibilityLabel="Iniciar sesión"
+            accessibilityState={{ busy: isSubmitting, disabled: isSubmitting }}
+            disabled={isSubmitting}
+            onPress={handleSubmit}
+          >
+            {isSubmitting ? (
+              <ActivityIndicator color="#FFFFFF" />
+            ) : (
+              <>
+                <Text style={styles.submitText}>Iniciar Sesión</Text>
+                <Ionicons name="arrow-forward" size={23} color="white" />
+              </>
+            )}
+          </Pressable>
+          <Link href="/" replace style={styles.continue}>
+            Continuar buscando vacantes
+          </Link>
+        </View>
       </ScrollView>
     </KeyboardAvoidingView>
   );
 }
+
+const styles = StyleSheet.create({
+  screen: { flex: 1, backgroundColor: '#F7FAFF' },
+  content: { padding: 20, paddingBottom: 40, flexGrow: 1 },
+  title: {
+    fontFamily: 'PlusJakartaSans_700Bold',
+    fontSize: 34,
+    color: '#0B1C30',
+    marginBottom: 12,
+  },
+  description: {
+    fontFamily: 'PlusJakartaSans_400Regular',
+    fontSize: 16,
+    lineHeight: 26,
+    color: '#47464F',
+    marginBottom: 22,
+  },
+  card: {
+    backgroundColor: 'white',
+    borderRadius: 20,
+    padding: 18,
+    gap: 14,
+    elevation: 3,
+    shadowColor: '#070235',
+    shadowOpacity: 0.1,
+    shadowOffset: { width: 0, height: 3 },
+    shadowRadius: 6,
+  },
+  labelRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    gap: 8,
+  },
+  label: {
+    fontFamily: 'PlusJakartaSans_600SemiBold',
+    fontSize: 17,
+    color: '#070235',
+  },
+  required: {
+    fontFamily: 'PlusJakartaSans_400Regular',
+    fontSize: 12,
+    color: '#63616E',
+  },
+  field: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+    minHeight: 56,
+    backgroundColor: '#EFF3FF',
+    borderWidth: 1,
+    borderColor: '#DFE1EB',
+    borderRadius: 14,
+    paddingHorizontal: 14,
+    marginBottom: 4,
+  },
+  input: {
+    flex: 1,
+    minWidth: 0,
+    paddingVertical: 14,
+    fontFamily: 'PlusJakartaSans_400Regular',
+    fontSize: 16,
+    color: '#0B1C30',
+  },
+  eyeButton: {
+    minWidth: 44,
+    minHeight: 44,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  submit: {
+    minHeight: 58,
+    backgroundColor: '#211B4B',
+    borderRadius: 14,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 12,
+  },
+  submitText: {
+    fontFamily: 'PlusJakartaSans_600SemiBold',
+    fontSize: 17,
+    color: 'white',
+  },
+  continue: {
+    fontFamily: 'PlusJakartaSans_500Medium',
+    color: '#0058BE',
+    textAlign: 'center',
+    paddingVertical: 12,
+    fontSize: 14,
+  },
+  error: {
+    color: '#C51C1C',
+    fontFamily: 'PlusJakartaSans_400Regular',
+    fontSize: 13,
+  },
+});
 
 export { LoginScreen };

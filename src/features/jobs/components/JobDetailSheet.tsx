@@ -1,7 +1,12 @@
-import { useEffect, useRef } from 'react';
+import { JobDescriptionCard } from './JobDescriptionCard';
+import { Ionicons } from '@expo/vector-icons';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { JobDetailPreview } from './JobDetailPreview';
+import { useEffect, useRef, useState } from 'react';
 import {
   ActivityIndicator,
   Button,
+  Pressable,
   Text,
   useWindowDimensions,
   View,
@@ -28,6 +33,8 @@ import { JobCard } from './JobCard';
 import { JobActions } from './JobActions';
 
 function JobDetailSheet() {
+  const [sheetIndex, setSheetIndex] = useState(0);
+  const insets = useSafeAreaInsets();
   const id = useDetailStore((state) => state.id);
   const source = useDetailStore((state) => state.source);
   const sheet = useRef<BottomSheetModal>(null);
@@ -140,6 +147,7 @@ function JobDetailSheet() {
     <BottomSheetModal
       ref={sheet}
       snapPoints={['60%', '100%']}
+      onChange={setSheetIndex}
       enableDynamicSizing={false}
       enablePanDownToClose
       backdropComponent={(props) => (
@@ -154,13 +162,27 @@ function JobDetailSheet() {
         useDetailStore.getState().close();
       }}
     >
+      <View style={{ alignItems: 'flex-end', paddingHorizontal: 20 }}>
+        <Pressable
+          onPress={() => sheet.current?.dismiss()}
+          accessibilityRole="button"
+          accessibilityLabel="Cerrar detalle"
+          style={({ pressed }) => ({
+            width: 44,
+            height: 44,
+            borderRadius: 22,
+            backgroundColor: '#E5EEFF',
+            alignItems: 'center',
+            justifyContent: 'center',
+            opacity: pressed ? 0.6 : 1,
+          })}
+        >
+          <Ionicons name="close" size={24} color="#47464F" />
+        </Pressable>
+      </View>
       <GestureDetector gesture={pan}>
         <Animated.View style={[{ flex: 1 }, animatedStyle]}>
           <BottomSheetScrollView keyboardShouldPersistTaps="handled">
-            <Button
-              title="Cerrar detalle"
-              onPress={() => useDetailStore.getState().close()}
-            />
             {detail.isPending ? (
               <ActivityIndicator accessibilityLabel="Cargando vacante" />
             ) : null}
@@ -181,43 +203,72 @@ function JobDetailSheet() {
             !(
               detail.error instanceof ApiError && detail.error.status === 404
             ) ? (
-              <View>
-                <JobCard job={detail.data} />
-                <Text>{detail.data.description}</Text>
-                <Text>
-                  Publicada:{' '}
-                  {new Date(detail.data.publishedAt).toLocaleDateString(
-                    'es-MX',
-                  )}
-                </Text>
-                <JobActions key={detail.data.id} job={detail.data} />
-              </View>
+              sheetIndex === 0 ? (
+                <JobDetailPreview
+                  job={detail.data}
+                  onExpand={() => sheet.current?.snapToIndex(1)}
+                />
+              ) : (
+                <View>
+                  <JobCard job={detail.data} />
+                  <View style={{ padding: 16, backgroundColor: '#F7F8FD' }}>
+                    <JobDescriptionCard />
+                  </View>
+                  <Text>
+                    Publicada:{' '}
+                    {new Date(detail.data.publishedAt).toLocaleDateString(
+                      'es-MX',
+                    )}
+                  </Text>
+                </View>
+              )
             ) : null}
-            <Button
-              title="Vacante anterior"
-              disabled={index <= 0}
-              onPress={() => navigate(-1)}
-            />
-            <Button
-              title="Vacante siguiente"
-              disabled={index < 0 || index >= jobs.length - 1}
-              onPress={() => navigate(1)}
-            />
-            {index >= jobs.length - 1 ? (
-              <Text>
-                {search.isFetchNextPageError
-                  ? 'Fin de resultados disponibles: no pudimos cargar más.'
-                  : 'Fin de resultados disponibles.'}
-              </Text>
-            ) : null}
-            {source.filters && search.isFetchNextPageError ? (
-              <Button
-                title="Reintentar siguientes vacantes"
-                onPress={() => {
-                  void search.loadMore();
-                }}
-              />
-            ) : null}
+            {sheetIndex > 0 && (
+              <>
+                <Button
+                  title="Vacante anterior"
+                  disabled={index <= 0}
+                  onPress={() => navigate(-1)}
+                />
+                <Button
+                  title="Vacante siguiente"
+                  disabled={index < 0 || index >= jobs.length - 1}
+                  onPress={() => navigate(1)}
+                />
+                {index >= jobs.length - 1 ? (
+                  <Text>
+                    {search.isFetchNextPageError
+                      ? 'Fin de resultados disponibles: no pudimos cargar más.'
+                      : 'Fin de resultados disponibles.'}
+                  </Text>
+                ) : null}
+                {source.filters && search.isFetchNextPageError ? (
+                  <Button
+                    title="Reintentar siguientes vacantes"
+                    onPress={() => {
+                      void search.loadMore();
+                    }}
+                  />
+                ) : null}
+              </>
+            )}
+            {detail.data &&
+              !(
+                detail.error instanceof ApiError && detail.error.status === 404
+              ) && (
+                <View
+                  style={{
+                    paddingHorizontal: 20,
+                    paddingTop: 12,
+                    paddingBottom: insets.bottom + 12,
+                    backgroundColor: 'white',
+                    borderTopWidth: 1,
+                    borderTopColor: '#EFF3FF',
+                  }}
+                >
+                  <JobActions key={detail.data.id} job={detail.data} compact />
+                </View>
+              )}
           </BottomSheetScrollView>
         </Animated.View>
       </GestureDetector>
