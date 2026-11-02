@@ -1,30 +1,39 @@
 import { MaterialCommunityIcons } from '@expo/vector-icons';
+import type { ReactNode } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 
 type FiltersHeaderProps = {
-  onClear: () => void;
+  title?: string;
+  icon?: ReactNode;
+  onClear?: () => void;
 };
 
-function FiltersHeader({ onClear }: FiltersHeaderProps) {
+function FiltersHeader({
+  title = 'Filtros en tiempo real',
+  icon = <MaterialCommunityIcons name="tune" size={14} color="#0058BE" />,
+  onClear,
+}: FiltersHeaderProps) {
   return (
     <View style={styles.container}>
       <View style={styles.titleGroup}>
-        <MaterialCommunityIcons name="tune" size={13} color="#0058BE" />
-        <Text style={styles.title}>Filtros en tiempo real</Text>
+        {icon}
+        <Text style={styles.title}>{title}</Text>
       </View>
 
-      <Pressable
-        onPress={onClear}
-        accessibilityRole="button"
-        accessibilityLabel="Limpiar filtros"
-        style={({ pressed }) => [
-          styles.clearButton,
-          { opacity: pressed ? 0.6 : 1 },
-        ]}
-      >
-        <MaterialCommunityIcons name="restore" size={12} color="#0058BE" />
-        <Text style={styles.clearText}>Limpiar filtros</Text>
-      </Pressable>
+      {onClear && (
+        <Pressable
+          onPress={onClear}
+          accessibilityRole="button"
+          accessibilityLabel="Limpiar filtros"
+          style={({ pressed }) => [
+            styles.clearButton,
+            { opacity: pressed ? 0.6 : 1 },
+          ]}
+        >
+          <MaterialCommunityIcons name="restore" size={12} color="#0058BE" />
+          <Text style={styles.clearText}>Limpiar filtros</Text>
+        </Pressable>
+      )}
     </View>
   );
 }

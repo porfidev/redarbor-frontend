@@ -1,18 +1,20 @@
 import { FontAwesome5, FontAwesome6 } from '@expo/vector-icons';
-import {
-  Pressable,
-  PressableProps,
-  StyleSheet,
-  Text,
-  View,
-} from 'react-native';
+import type { ReactNode } from 'react';
+import type { PressableProps } from 'react-native';
+import { Pressable, StyleSheet, Text, View } from 'react-native';
 
-type SelectableOption = PressableProps & {
+type SelectableOptionProps = PressableProps & {
   selected?: boolean;
   label: string;
+  icon?: ReactNode;
 };
 
-function SelectableOption({ selected, label, ...props }: SelectableOption) {
+function SelectableOption({
+  selected,
+  label,
+  icon = <FontAwesome6 name="building" size={13} color="black" />,
+  ...props
+}: SelectableOptionProps) {
   return (
     <Pressable
       style={[
@@ -23,9 +25,7 @@ function SelectableOption({ selected, label, ...props }: SelectableOption) {
       accessibilityState={{ checked: selected }}
       {...props}
     >
-      <View style={styles.iconWrapper}>
-        <FontAwesome6 name="building" size={13} color="black" />
-      </View>
+      <View style={styles.iconWrapper}>{icon}</View>
       <View style={styles.labelWrapper}>
         <Text style={[styles.labelText, selected && styles.labelTextSelected]}>
           {label}

@@ -10,21 +10,20 @@ import { SelectableOption } from '@/features/jobs/components/SelectableOption';
 import {
   FontAwesome6,
   MaterialCommunityIcons,
-  MaterialIcons,
   Octicons,
 } from '@expo/vector-icons';
 import {
-  BottomSheetFlashList,
   BottomSheetModal,
   useBottomSheetScrollableCreator,
 } from '@gorhom/bottom-sheet';
 import { FlashList } from '@shopify/flash-list';
 import { useRef } from 'react';
-import { Button, Pressable, Text, TextInput, View } from 'react-native';
+import type { ReactNode } from 'react';
+import { Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import type { JobSort } from '../jobs.schema';
-import { SearchForm } from '../types/SearchForm';
+import type { SearchForm } from '../types/SearchForm';
 
 type JobSearchControlsProps = {
   onClear: () => void;
@@ -35,13 +34,6 @@ type JobSearchControlsProps = {
 type SelectOption<T extends string> = {
   label: string;
   value: T;
-};
-
-type InlineSelectProps<T extends string> = {
-  label: string;
-  value: T;
-  options: readonly SelectOption<T>[];
-  onChange: (value: T) => void;
 };
 
 const initialSearchForm: SearchForm = {
@@ -61,6 +53,38 @@ const cityOptions: readonly SelectOption<string>[] = [
   { label: 'Querétaro', value: 'Querétaro' },
 ];
 
+const sortIcons: Record<JobSort, ReactNode> = {
+  date_desc: (
+    <MaterialCommunityIcons
+      name="sort-calendar-descending"
+      size={13}
+      color="#0058BE"
+    />
+  ),
+  date_asc: (
+    <MaterialCommunityIcons
+      name="sort-calendar-ascending"
+      size={13}
+      color="#0058BE"
+    />
+  ),
+  salary_desc: (
+    <MaterialCommunityIcons
+      name="sort-numeric-descending"
+      size={13}
+      color="#0058BE"
+    />
+  ),
+  salary_asc: (
+    <MaterialCommunityIcons
+      name="sort-numeric-ascending"
+      size={13}
+      color="#0058BE"
+    />
+  ),
+  relevance: <FontAwesome6 name="star" size={13} color="#0058BE" />,
+};
+
 const sortOptions: readonly SelectOption<JobSort>[] = [
   { label: 'Más recientes', value: 'date_desc' },
   { label: 'Más antiguos', value: 'date_asc' },
@@ -69,34 +93,14 @@ const sortOptions: readonly SelectOption<JobSort>[] = [
   { label: 'Relevancia', value: 'relevance' },
 ];
 
-function InlineSelect<T extends string>({
-  label,
+function JobSearchControls({
   value,
-  options,
   onChange,
-}: InlineSelectProps<T>) {
-  return (
-    <View>
-      <Text>{label}</Text>
-
-      {options.map((option) => (
-        <Button
-          key={option.value}
-          title={
-            option.value === value
-              ? `Seleccionado: ${option.label}`
-              : option.label
-          }
-          disabled={option.value === value}
-          onPress={() => onChange(option.value)}
-        />
-      ))}
-    </View>
-  );
-}
-
-function JobSearchControls({ value, onChange, onClear }: JobSearchControlsProps) {
+  onClear,
+}: JobSearchControlsProps) {
   const sheetRef = useRef<BottomSheetModal>(null);
+  const sortSheetRef = useRef<BottomSheetModal>(null);
+  const SortScrollComponent = useBottomSheetScrollableCreator();
   const ScrollComponent = useBottomSheetScrollableCreator();
   const insets = useSafeAreaInsets();
 
@@ -139,17 +143,61 @@ function JobSearchControls({ value, onChange, onClear }: JobSearchControlsProps)
         </>
       </FiltersCard>
 
-      <InlineSelect
-        label="Ordenar por"
-        value={value.sort}
-        options={sortOptions}
-        onChange={(sort) => onChange({ ...value, sort })}
-      />
+      <Spacer />
+      <FiltersCard>
+        <>
+          <FiltersHeader
+            title="Ordenar por"
+            icon={
+              <MaterialCommunityIcons name="sort" size={14} color="#0058BE" />
+            }
+          />
+          <Spacer />
+          <SelectableButton
+            placeholder="Selecciona el orden"
+            value={
+              sortOptions.find((option) => option.value === value.sort)
+                ?.label ?? ''
+            }
+            onPress={() => sortSheetRef.current?.present()}
+          />
+        </>
+      </FiltersCard>
 
-      <Button
-        title="Limpiar filtros"
-        onPress={() => onChange({ ...initialSearchForm })}
-      />
+      <BottomSheetModal
+        ref={sortSheetRef}
+        snapPoints={['40%']}
+        enableDynamicSizing={false}
+        enablePanDownToClose
+      >
+        <FlashList
+          style={{ marginBottom: insets.bottom }}
+          data={sortOptions}
+          extraData={value.sort}
+          keyExtractor={(item) => item.value}
+          renderScrollComponent={SortScrollComponent}
+          contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: 16 }}
+          ListHeaderComponent={
+            <View style={{ paddingVertical: 8 }}>
+              <FieldLabel label="ORDENAR POR" />
+            </View>
+          }
+          ItemSeparatorComponent={() => <Spacer height={6} />}
+          renderItem={({ item }) => (
+            <SelectableOption
+              accessibilityRole="radio"
+              accessibilityState={{ checked: item.value === value.sort }}
+              label={item.label}
+              selected={item.value === value.sort}
+              icon={sortIcons[item.value]}
+              onPress={() => {
+                onChange({ ...value, sort: item.value });
+                sortSheetRef.current?.dismiss();
+              }}
+            />
+          )}
+        />
+      </BottomSheetModal>
 
       <BottomSheetModal
         ref={sheetRef}
