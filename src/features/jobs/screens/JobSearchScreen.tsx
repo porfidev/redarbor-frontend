@@ -3,6 +3,7 @@ import { FiltersHeader } from '@/features/jobs/components/FiltersHeader';
 import { JobCard } from '@/features/jobs/components/JobCard';
 import { JobCardSkeleton } from '@/features/jobs/components/JobCardSkeleton';
 import { JobsEmptyState } from '@/features/jobs/components/JobsEmptyState';
+import { JobsErrorState } from '@/features/jobs/components/JobsErrorState';
 import {
   initialSearchForm,
   JobSearchControls,
@@ -120,15 +121,11 @@ function JobSearchScreen() {
 
     if (search.isError) {
       return (
-        <View>
-          <Text accessibilityRole="alert">{getSearchError(search.error)}</Text>
-          <Button
-            title="Reintentar búsqueda"
-            onPress={() => {
-              void search.refetch();
-            }}
-          />
-        </View>
+        <JobsErrorState
+          onRetry={() => {
+            void search.refetch();
+          }}
+        />
       );
     }
 
@@ -139,6 +136,7 @@ function JobSearchScreen() {
     if (
       search.jobs.length === 0 ||
       isLoadingResults ||
+      (search.isError && !search.isFetchNextPageError) ||
       search.validationError ||
       search.isDebouncing
     ) {
@@ -188,7 +186,11 @@ function JobSearchScreen() {
         overflow: 'visible',
       }}
       ref={listRef}
-      data={isLoadingResults ? [] : search.jobs}
+      data={
+        isLoadingResults || (search.isError && !search.isFetchNextPageError)
+          ? []
+          : search.jobs
+      }
       keyExtractor={(job) => job.id}
       renderItem={({ item }) => (
         <View style={{ paddingHorizontal: 12 }}>
@@ -221,17 +223,33 @@ function JobSearchScreen() {
             }
           />
 
-          {!search.validationError && !search.isDebouncing ? (
+          {!search.validationError ? (
             <>
               <Spacer />
               <FiltersHeader
-                title="Vacantes encontradas"
+                title={
+                  isLoadingResults
+                    ? 'Buscando Vacantes'
+                    : search.isError
+                      ? 'Estado de la búsqueda'
+                      : 'Vacantes encontradas'
+                }
                 fontSize={24}
                 icon={
                   <MaterialCommunityIcons
-                    name="view-agenda-outline"
+                    name={
+                      isLoadingResults
+                        ? 'magnify'
+                        : search.isError
+                          ? 'cloud-off-outline'
+                          : 'view-agenda-outline'
+                    }
                     size={26}
-                    color="#0058BE"
+                    color={
+                      !isLoadingResults && search.isError
+                        ? '#C51C1C'
+                        : '#0058BE'
+                    }
                   />
                 }
               />
