@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import type { Job } from './jobs.schema';
-import type { JobsSearchFilters } from './hooks/use-job-search';
+import type { JobsSearchFilters } from './hooks/useJobSearch';
 
 type DetailSource = {
   jobs: Job[];

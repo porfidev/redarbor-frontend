@@ -1,16 +1,15 @@
+import * as componentStyles from '@/styles/TabLayout.styles';
 import { OccHeader } from '@/components/OccHeader';
-import { SessionGuard } from '@/features/auth/components/session-guard';
+import { SessionGuard } from '@/features/auth/components/SessionGuard';
 import { DefaultTheme, Stack, ThemeProvider } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 
-import { AnimatedSplashOverlay } from '@/components/animated-icon';
-import { QueryProvider } from '@/providers/query-provider';
+import { AnimatedSplashOverlay } from '@/components/AnimatedIcon';
+import { QueryProvider } from '@/providers/QueryProvider';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 import { JobDetailSheet } from '@/features/jobs/components/JobDetailSheet';
 import { NotificationBridge } from '@/features/notifications/NotificationBridge';
-void SplashScreen.preventAutoHideAsync();
-
 import {
   useFonts,
   PlusJakartaSans_400Regular,
@@ -18,6 +17,7 @@ import {
   PlusJakartaSans_600SemiBold,
   PlusJakartaSans_700Bold,
 } from '@expo-google-fonts/plus-jakarta-sans';
+void SplashScreen.preventAutoHideAsync();
 
 export default function TabLayout() {
   const [fontsLoaded, fontError] = useFonts({
@@ -31,7 +31,7 @@ export default function TabLayout() {
   if (!fontsLoaded) return null;
 
   return (
-    <GestureHandlerRootView style={{ flex: 1 }}>
+    <GestureHandlerRootView style={componentStyles.style1}>
       <ThemeProvider value={DefaultTheme}>
         <AnimatedSplashOverlay />
         <QueryProvider>

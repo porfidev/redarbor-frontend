@@ -1,3 +1,4 @@
+import * as componentStyles from './JobSearchControls.styles';
 import { FieldLabel } from '@/components/FieldLabel';
 import { Spacer } from '@/components/Spacer';
 import { AmountInput } from '@/features/jobs/components/AmountInput';
@@ -128,7 +129,7 @@ function JobSearchControls({
             label={'Rango Salarial Mensual'}
             icon={<FontAwesome6 name="money-bills" size={12} color="#009D6C" />}
           />
-          <View style={{ flexDirection: 'row', gap: 12 }}>
+          <View style={componentStyles.style1}>
             <AmountInput
               placeholder="Mínimo (MXN)"
               value={value.salaryMin}
@@ -174,14 +175,14 @@ function JobSearchControls({
         enablePanDownToClose
       >
         <FlashList
-          style={{ marginBottom: insets.bottom }}
+          style={componentStyles.style2(insets)}
           data={sortOptions}
           extraData={value.sort}
           keyExtractor={(item) => item.value}
           renderScrollComponent={SortScrollComponent}
-          contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: 16 }}
+          contentContainerStyle={componentStyles.style3}
           ListHeaderComponent={
-            <View style={{ paddingVertical: 8 }}>
+            <View style={componentStyles.style4}>
               <FieldLabel label="ORDENAR POR" />
             </View>
           }
@@ -209,34 +210,18 @@ function JobSearchControls({
         enablePanDownToClose={true}
       >
         <FlashList
-          style={{ marginBottom: insets.bottom }}
+          style={componentStyles.style5(insets)}
           data={cityOptions}
-          contentContainerStyle={{
-            paddingHorizontal: 16,
-            paddingBottom: 16,
-          }}
+          contentContainerStyle={componentStyles.style6}
           renderScrollComponent={ScrollComponent}
           ListHeaderComponent={
-            <View
-              style={{
-                flexDirection: 'row',
-                alignItems: 'center',
-                gap: 6,
-                paddingVertical: 8,
-              }}
-            >
+            <View style={componentStyles.style7}>
               <MaterialCommunityIcons
                 name="office-building-marker-outline"
                 size={11}
                 color="#0058BE"
               />
-              <Text
-                style={{
-                  fontSize: 11,
-                  fontFamily: 'PlusJakartaSans_700Bold',
-                  color: '#47464F',
-                }}
-              >
+              <Text style={componentStyles.style8}>
                 PRINCIPALES CIUDADES (MÉXICO)
               </Text>
             </View>

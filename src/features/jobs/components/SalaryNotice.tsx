@@ -1,5 +1,6 @@
+import { styles } from './SalaryNotice.styles';
 import { Ionicons } from '@expo/vector-icons';
-import { StyleSheet, Text, View } from 'react-native';
+import { Text, View } from 'react-native';
 
 function SalaryNotice() {
   return (
@@ -13,24 +14,5 @@ function SalaryNotice() {
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flexDirection: 'row',
-    alignItems: 'flex-start',
-    gap: 6,
-    paddingVertical: 6,
-    paddingHorizontal: 12,
-    borderRadius: 8,
-    backgroundColor: '#F0F5FF',
-  },
-  text: {
-    flex: 1,
-    color: '#47464F',
-    fontFamily: 'PlusJakartaSans_400Regular',
-    fontSize: 11,
-    includeFontPadding: false,
-  },
-});
 
 export { SalaryNotice };

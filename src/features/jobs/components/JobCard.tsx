@@ -1,7 +1,7 @@
+import { styles } from './JobCard.styles';
 import { salaryFormatter } from '@/utils/salaryFormatter';
-import { font } from '@expo/ui/swift-ui/modifiers';
 import { Ionicons } from '@expo/vector-icons';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { Pressable, Text, View } from 'react-native';
 import type { Job } from '@/features/jobs/jobs.schema';
 
 type JobCardProps = {
@@ -94,116 +94,5 @@ function JobCard({ job, onOpen }: JobCardProps) {
     </Pressable>
   );
 }
-
-const styles = StyleSheet.create({
-  card: {
-    backgroundColor: '#FFFFFF',
-    borderRadius: 16,
-    borderWidth: 1,
-    borderColor: '#EEEDF2',
-    padding: 16,
-    gap: 14,
-    marginBottom: 12,
-  },
-  pressed: { opacity: 0.75 },
-  header: { flexDirection: 'row', alignItems: 'center', gap: 12 },
-  avatar: {
-    width: 36,
-    height: 36,
-    borderRadius: 8,
-    backgroundColor: '#211B4B',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  initial: {
-    color: '#FFFFFF',
-    fontFamily: 'PlusJakartaSans_700Bold',
-    fontSize: 18,
-    includeFontPadding: false,
-  },
-  heading: { flex: 1, gap: 4 },
-  title: {
-    color: '#0B1C30',
-    fontFamily: 'PlusJakartaSans_700Bold',
-    fontSize: 15,
-  },
-  secondary: {
-    color: '#47464F',
-    fontFamily: 'PlusJakartaSans_400Regular',
-    fontSize: 12,
-    includeFontPadding: false,
-  },
-  description: {
-    color: 'rgb(71 70 79 / 0.9)',
-    fontFamily: 'PlusJakartaSans_400Regular',
-    fontSize: 12,
-  },
-  metadata: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    alignItems: 'center',
-    gap: 10,
-  },
-  location: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 4,
-    flexShrink: 1,
-  },
-  salary: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 6,
-    backgroundColor: '#DDF8EF',
-    borderRadius: 5,
-    paddingHorizontal: 10,
-    paddingVertical: 7,
-  },
-  undisclosedSalary: {
-    backgroundColor: '#E8EEFF',
-    borderRadius: 8,
-  },
-  undisclosedSalaryText: {
-    color: '#63616E',
-    fontFamily: 'PlusJakartaSans_400Regular',
-    fontStyle: 'italic',
-  },
-  salaryText: {
-    color: '#070235',
-    fontFamily: 'PlusJakartaSans_700Bold',
-    fontSize: 11,
-    includeFontPadding: false,
-  },
-  footer: {
-    borderTopWidth: 1,
-    borderTopColor: '#EFF3FF',
-    paddingTop: 10,
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    gap: 10,
-  },
-  tags: { flexDirection: 'row', flexWrap: 'wrap', gap: 6, flex: 1 },
-  tag: {
-    backgroundColor: '#E8EEFF',
-    borderRadius: 5,
-    paddingHorizontal: 10,
-    paddingVertical: 7,
-  },
-  tagText: {
-    color: '#070235',
-    fontFamily: 'PlusJakartaSans_400Regular',
-    fontSize: 10,
-    includeFontPadding: false,
-  },
-  timestamp: { flexDirection: 'row', alignItems: 'center', gap: 4 },
-  timeText: {
-    color: '#47464F',
-    fontFamily: 'PlusJakartaSans_400Regular',
-    fontSize: 11,
-    includeFontPadding: false,
-  },
-});
 
 export { JobCard };

@@ -1,13 +1,12 @@
+import * as componentStyles from './JobActions.styles';
 import { Ionicons } from '@expo/vector-icons';
 import { useState } from 'react';
 import { Button, Pressable, Text, View } from 'react-native';
 import { router } from 'expo-router';
 import { ApiError } from '@/errors';
 import { useSessionStore } from '@/features/auth/auth.store';
-import {
-  useActivities,
-  useActivityMutation,
-} from '@/features/activities/activities.hooks';
+import { useActivities } from '@/features/activities/hooks/useActivities';
+import { useActivityMutation } from '@/features/activities/hooks/useActivityMutation';
 import type { ActivityKind } from '@/features/activities/activities.service';
 import { errorMessage } from '@/utils/errorMessage';
 import { useDetailStore } from '../detail.store';
@@ -59,7 +58,7 @@ function JobActions({ job, compact = false }: { job: Job; compact?: boolean }) {
   return (
     <View>
       {compact ? (
-        <View style={{ flexDirection: 'row', gap: 12 }}>
+        <View style={componentStyles.style1}>
           <Pressable
             accessibilityRole="button"
             accessibilityLabel={
@@ -72,15 +71,7 @@ function JobActions({ job, compact = false }: { job: Job; compact?: boolean }) {
             onPress={() => {
               void act('favorites');
             }}
-            style={({ pressed }) => ({
-              width: 54,
-              minHeight: 54,
-              borderRadius: 14,
-              backgroundColor: '#EFF4FF',
-              alignItems: 'center',
-              justifyContent: 'center',
-              opacity: busy || pressed ? 0.5 : 1,
-            })}
+            style={({ pressed }) => componentStyles.style2(busy, pressed)}
           >
             <Ionicons
               name={favorited ? 'bookmark' : 'bookmark-outline'}
@@ -98,25 +89,11 @@ function JobActions({ job, compact = false }: { job: Job; compact?: boolean }) {
             onPress={() => {
               void act('applications');
             }}
-            style={({ pressed }) => ({
-              flex: 1,
-              minHeight: 54,
-              borderRadius: 14,
-              backgroundColor: '#211B4B',
-              flexDirection: 'row',
-              gap: 8,
-              alignItems: 'center',
-              justifyContent: 'center',
-              opacity: busy || applied || pressed ? 0.5 : 1,
-            })}
+            style={({ pressed }) =>
+              componentStyles.style3(busy, applied, pressed)
+            }
           >
-            <Text
-              style={{
-                color: 'white',
-                fontFamily: 'PlusJakartaSans_700Bold',
-                fontSize: 15,
-              }}
-            >
+            <Text style={componentStyles.style4}>
               {applied ? 'Ya te postulaste' : 'Postularme ahora'}
             </Text>
             <Ionicons name="send-outline" size={20} color="white" />

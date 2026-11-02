@@ -1,5 +1,6 @@
+import { styles } from './FieldLabel.styles';
 import type { ReactNode } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { Text, View } from 'react-native';
 
 type FieldLabelProps = {
   label: string;
@@ -14,19 +15,5 @@ function FieldLabel({ label, icon }: FieldLabelProps) {
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 6,
-    marginBottom: 6,
-  },
-  label: {
-    color: '#47464F',
-    fontFamily: 'PlusJakartaSans_500Medium',
-    fontSize: 11,
-  },
-});
 
 export { FieldLabel };

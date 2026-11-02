@@ -1,5 +1,6 @@
+import { styles } from './OccHeader.styles';
 import { Ionicons } from '@expo/vector-icons';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 function OccHeader() {
@@ -13,18 +14,4 @@ function OccHeader() {
   );
 }
 
-const styles = StyleSheet.create({
-  headerWrapper: {
-    backgroundColor: '#F8F9FF',
-    height: 64,
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: 12,
-    flexDirection: 'row',
-  },
-  title: {
-    fontSize: 18,
-    fontFamily: 'PlusJakartaSans_600SemiBold',
-  },
-});
 export { OccHeader };

@@ -1,4 +1,4 @@
-import { ActivitiesScreen } from '@/features/activities/screens/activities.screen';
+import { ActivitiesScreen } from '@/features/activities/screens/ActivitiesScreen';
 import { useSessionStore } from '@/features/auth/auth.store';
 import { Redirect } from 'expo-router';
 

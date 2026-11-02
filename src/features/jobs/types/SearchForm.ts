@@ -1,4 +1,4 @@
-import { JobSort } from '@/features/jobs/jobs.schema';
+import type { JobSort } from '@/features/jobs/jobs.schema';
 
 type SearchForm = {
   q: string;

@@ -1,5 +1,7 @@
+import { styles } from './JobDescriptionCard.styles';
+import * as componentStyles from './JobDescriptionCard.styles';
 import { Ionicons } from '@expo/vector-icons';
-import { StyleSheet, Text, View } from 'react-native';
+import { Text, View } from 'react-native';
 
 const responsibilities = [
   'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer vitae justo vel neque facilisis interdum.',
@@ -29,42 +31,11 @@ export function JobDescriptionCard() {
             name="checkmark-circle-outline"
             size={20}
             color="#0058BE"
-            style={{ marginTop: 3 }}
+            style={componentStyles.style1}
           />
-          <Text style={[styles.body, { flex: 1 }]}>{text}</Text>
+          <Text style={[styles.body, componentStyles.style2]}>{text}</Text>
         </View>
       ))}
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  card: {
-    backgroundColor: '#FFFFFF',
-    borderRadius: 18,
-    borderWidth: 1,
-    borderColor: '#EFF0F5',
-    padding: 20,
-    gap: 16,
-  },
-  heading: { flexDirection: 'row', alignItems: 'center', gap: 10 },
-  title: {
-    flex: 1,
-    color: '#070235',
-    fontFamily: 'PlusJakartaSans_700Bold',
-    fontSize: 20,
-  },
-  body: {
-    color: '#0B1C30',
-    fontFamily: 'PlusJakartaSans_400Regular',
-    fontSize: 15,
-    lineHeight: 24,
-  },
-  subtitle: {
-    color: '#070235',
-    fontFamily: 'PlusJakartaSans_700Bold',
-    fontSize: 16,
-    marginTop: 6,
-  },
-  row: { flexDirection: 'row', alignItems: 'flex-start', gap: 12 },
-});

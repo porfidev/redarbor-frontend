@@ -1,3 +1,4 @@
+import * as componentStyles from './JobSearchScreen.styles';
 import { Spacer } from '@/components/Spacer';
 import { FiltersHeader } from '@/features/jobs/components/FiltersHeader';
 import { JobCard } from '@/features/jobs/components/JobCard';
@@ -20,7 +21,7 @@ import { ApiError } from '@/errors';
 import { getErrorMessage } from '@/messages/error.messages';
 import { ErrorCode } from '@/types/ErrorCode';
 
-import { useJobSearch } from '../hooks/use-job-search';
+import { useJobSearch } from '../hooks/useJobSearch';
 import type { Job } from '../jobs.schema';
 
 function parseSalary(value: string): number | undefined {
@@ -108,7 +109,7 @@ function JobSearchScreen() {
     if (isLoadingResults) {
       return (
         <View
-          style={{ paddingHorizontal: 12 }}
+          style={componentStyles.style1}
           accessibilityLabel="Buscando vacantes"
           accessibilityState={{ busy: true }}
         >
@@ -182,9 +183,7 @@ function JobSearchScreen() {
 
   return (
     <FlashList
-      style={{
-        overflow: 'visible',
-      }}
+      style={componentStyles.style2}
       ref={listRef}
       data={
         isLoadingResults || (search.isError && !search.isFetchNextPageError)
@@ -193,7 +192,7 @@ function JobSearchScreen() {
       }
       keyExtractor={(job) => job.id}
       renderItem={({ item }) => (
-        <View style={{ paddingHorizontal: 12 }}>
+        <View style={componentStyles.style3}>
           <JobCard
             job={item}
             onOpen={() =>
@@ -210,7 +209,7 @@ function JobSearchScreen() {
       keyboardShouldPersistTaps="handled"
       maintainVisibleContentPosition={{ disabled: true }}
       ListHeaderComponent={
-        <View style={{ paddingHorizontal: 12 }}>
+        <View style={componentStyles.style4}>
           <JobSearchControls
             value={form}
             onChange={setForm}

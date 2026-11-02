@@ -1,3 +1,4 @@
+import * as componentStyles from './JobDetailSheet.styles';
 import { JobDescriptionCard } from './JobDescriptionCard';
 import { Ionicons } from '@expo/vector-icons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -26,7 +27,7 @@ import { scheduleOnRN } from 'react-native-worklets';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { errorMessage } from '@/utils/errorMessage';
 import { ApiError } from '@/errors';
-import { useJobSearch, jobKeys } from '../hooks/use-job-search';
+import { useJobSearch, jobKeys } from '../hooks/useJobSearch';
 import { useDetailStore } from '../detail.store';
 import { getJobById } from '../jobs.service';
 import { JobCard } from './JobCard';
@@ -85,11 +86,15 @@ function JobDetailSheet() {
             updatedAt: 0,
           });
         }
-        void client.prefetchQuery({
-          queryKey: jobKeys.detail(adjacent.id),
-          queryFn: ({ signal }) => getJobById(adjacent.id, signal),
-          staleTime: 30_000,
-        });
+        client
+          .query({
+            queryKey: jobKeys.detail(adjacent.id),
+            queryFn: ({ signal }) => getJobById(adjacent.id, signal),
+            staleTime: 30_000,
+          })
+          .catch(() => {
+            // Prefetch is optional; the active detail query handles errors and retries.
+          });
       }
     }
   }, [
@@ -162,26 +167,18 @@ function JobDetailSheet() {
         useDetailStore.getState().close();
       }}
     >
-      <View style={{ alignItems: 'flex-end', paddingHorizontal: 20 }}>
+      <View style={componentStyles.style1}>
         <Pressable
           onPress={() => sheet.current?.dismiss()}
           accessibilityRole="button"
           accessibilityLabel="Cerrar detalle"
-          style={({ pressed }) => ({
-            width: 44,
-            height: 44,
-            borderRadius: 22,
-            backgroundColor: '#E5EEFF',
-            alignItems: 'center',
-            justifyContent: 'center',
-            opacity: pressed ? 0.6 : 1,
-          })}
+          style={({ pressed }) => componentStyles.style2(pressed)}
         >
           <Ionicons name="close" size={24} color="#47464F" />
         </Pressable>
       </View>
       <GestureDetector gesture={pan}>
-        <Animated.View style={[{ flex: 1 }, animatedStyle]}>
+        <Animated.View style={[componentStyles.style3, animatedStyle]}>
           <BottomSheetScrollView keyboardShouldPersistTaps="handled">
             {detail.isPending ? (
               <ActivityIndicator accessibilityLabel="Cargando vacante" />
@@ -211,7 +208,7 @@ function JobDetailSheet() {
               ) : (
                 <View>
                   <JobCard job={detail.data} />
-                  <View style={{ padding: 16, backgroundColor: '#F7F8FD' }}>
+                  <View style={componentStyles.style4}>
                     <JobDescriptionCard />
                   </View>
                   <Text>
@@ -256,16 +253,7 @@ function JobDetailSheet() {
               !(
                 detail.error instanceof ApiError && detail.error.status === 404
               ) && (
-                <View
-                  style={{
-                    paddingHorizontal: 20,
-                    paddingTop: 12,
-                    paddingBottom: insets.bottom + 12,
-                    backgroundColor: 'white',
-                    borderTopWidth: 1,
-                    borderTopColor: '#EFF3FF',
-                  }}
-                >
+                <View style={componentStyles.style5(insets)}>
                   <JobActions key={detail.data.id} job={detail.data} compact />
                 </View>
               )}

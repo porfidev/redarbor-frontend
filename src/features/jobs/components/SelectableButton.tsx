@@ -1,5 +1,7 @@
+import { styles } from './SelectableButton.styles';
+import * as componentStyles from './SelectableButton.styles';
 import { FontAwesome } from '@expo/vector-icons';
-import { Pressable, StyleSheet, Text } from 'react-native';
+import { Pressable, Text } from 'react-native';
 import type { PressableProps } from 'react-native';
 
 type SelectableButtonProps = PressableProps & {
@@ -15,7 +17,7 @@ function SelectableButton({
 }: SelectableButtonProps) {
   return (
     <Pressable
-      style={[styles.selectableButton, disabled && { opacity: 0.45 }]}
+      style={[styles.selectableButton, disabled && componentStyles.style1]}
       disabled={disabled}
       accessibilityState={{ disabled }}
       onPress={onPress}
@@ -32,25 +34,5 @@ function SelectableButton({
     </Pressable>
   );
 }
-
-const styles = StyleSheet.create({
-  selectableButton: {
-    backgroundColor: '#EFF4FF',
-    flexDirection: 'row',
-    borderRadius: 12,
-    height: 36,
-    paddingVertical: 8,
-    paddingHorizontal: 12,
-    justifyContent: 'space-between',
-  },
-  valueText: {
-    color: '#0B1C30',
-    fontFamily: 'PlusJakartaSans_500Medium',
-    fontSize: 12,
-  },
-  valueTextPressed: {
-    color: '#0B1C30',
-  },
-});
 
 export { SelectableButton };
